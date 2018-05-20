@@ -78,7 +78,8 @@ add_params <- function(model,
                        traj_name = NULL,
                        exec_dir = NULL,
                        met_dir = NULL,
-                       binary_path = NULL) {
+                       binary_path = NULL,
+                       particle_num = NULL) {
   
   if (!is.null(lat)) {
     model$lat <- lat
@@ -142,6 +143,9 @@ add_params <- function(model,
   
   if (!is.null(binary_path)) {
     model$binary_path <- binary_path
+  }
+  if(!is.null(particle_num)){
+    model$particle_num = particle_num
   }
   
   return(model)

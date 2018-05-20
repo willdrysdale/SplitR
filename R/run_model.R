@@ -59,17 +59,20 @@ run_model <- function(model,return_disp_df = F) {
                              0, model$vert_motion),
         model_height = ifelse(is.null(model$model_height),
                               20000, model$model_height),
-        particle_num = 2500,
+        particle_num = ifelse(is.null(model$model_height),
+                              2500, model$model_height),
         particle_max = 10000,
         emissions = model$emissions,
         species = model$species,
         grids = model$grids,
-        return_disp_df = TRUE,
+        exec_dir = model$exec_dir,
+        return_disp_df = return_disp_df,
         write_disp_CSV = TRUE,
-        met_dir = model$met_dir
+        met_dir = model$met_dir,
+        disp_name = model$disp_name
       )
    
     model$disp_df <- disp_df
-    return(model) 
+    invisible(model) 
   }
 }

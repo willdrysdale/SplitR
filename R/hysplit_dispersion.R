@@ -96,7 +96,14 @@ hysplit_dispersion <- function(lat = 49.263,
                                return_disp_df = TRUE,
                                write_disp_CSV = TRUE,
                                disp_name = NULL,
-                               met_dir = NULL) { 
+                               met_dir = NULL,
+                               exec_dir = NULL) { 
+  if(is.null(exec_dir))
+    exec_dir = getwd()
+  if(!dir.exists(exec_dir))
+    dir.create(exec_dir,recursive = T)
+  if(!is.null(exec_dir))
+    setwd(exec_dir)
   
   if (length(start_day) == 1 &
       class(start_day) == "character" &
@@ -743,6 +750,7 @@ hysplit_dispersion <- function(lat = 49.263,
                   quote = FALSE)
     }
   }
+
   
   # Move the .csv files from the working directory
   # to the output folder
@@ -762,12 +770,11 @@ hysplit_dispersion <- function(lat = 49.263,
     
     # Perform the movement of all dispersion files
     # into a folder residing in the output dir
-    dir.create(path = paste0(getwd(), "/",
+    dir.create(path = paste0(exec_dir, "/",
                              folder_name))
-    
     system(paste0("(cd ", getwd(),
                   " && mv GIS_part*.csv '",
-                  getwd(), "/",
+                  exec_dir, "/",
                   folder_name,
                   "')"))
   }
@@ -788,28 +795,41 @@ hysplit_dispersion <- function(lat = 49.263,
     
     # Perform the movement of all dispersion files
     # into a folder residing in the output dir
-    dir.create(path = paste0(getwd(), "/",
+    dir.create(path = paste0(exec_dir, "/",
                              folder_name))
     
     shell(paste0("(cd \"", getwd(),
                  "\" && move GIS_part*.csv \"",
-                 getwd(), "/",
+                 exec_dir, "/",
                  folder_name,
                  "\")"))
   }
+  # Remove GIS.txt files from the working directory
+  if (any(c("mac", "unix") %in% get_os())) {
+    system(paste0("(cd ", getwd(),
+                  " && rm GIS_part*.txt)"))
+  }
+  
+  if (get_os() == "win") {
+    shell(paste0("(cd \"", getwd(),
+                 "\" && del GIS_part*.txt)"))
+  }
+  
   
   # Write the dispersion data frame to a CSV if
   # it is requested
+
+  
   if (write_disp_CSV) {
     disp_df <- 
       dispersion_read(archive_folder =
-                        paste0(getwd(), "/",
+                        paste0(exec_dir, "/",
                                folder_name))
     
     if (any(c("mac", "unix") %in% get_os())) {
       write.table(
         disp_df,
-        file = paste0(getwd(), "/",
+        file = paste0(exec_dir, "/",
                       folder_name,
                       "/dispersion.csv"),
         sep = ",",
@@ -818,7 +838,7 @@ hysplit_dispersion <- function(lat = 49.263,
     
     if (get_os() == "win") {
       if (get_os() == "win") {
-        write.table(disp_df, file = paste0(getwd(),"/", folder_name, "/dispersion.csv"),
+        write.table(disp_df, file = paste0(exec_dir,"/", folder_name, "/dispersion.csv"),
                     sep = ",",row.names = FALSE)
       }
     }
