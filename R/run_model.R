@@ -32,8 +32,7 @@ run_model <- function(model,return_disp_df = F) {
         traj_name = model$traj_name,
         exec_dir = model$exec_dir,
         met_dir = model$met_dir,
-        binary_path = model$binary_path,
-        met_dir = model$met_dir
+        binary_path = model$binary_path
       )
     
     model$traj_df <- traj_df
@@ -66,7 +65,8 @@ run_model <- function(model,return_disp_df = F) {
         species = model$species,
         grids = model$grids,
         return_disp_df = TRUE,
-        write_disp_CSV = TRUE
+        write_disp_CSV = TRUE,
+        met_dir = model$met_dir
       )
    
     model$disp_df <- disp_df

@@ -493,7 +493,7 @@ hysplit_dispersion <- function(lat = 49.263,
       sep = '', append = TRUE)
   
   # Write met file paths to 'CONTROL'
-  if(!is.null(met_dir)){
+  if(is.null(met_dir)){
     for (i in 1:length(met)) {
       cat(getwd(), "/\n", met[i], "\n",
           file = paste0(getwd(), "/", "CONTROL"),
