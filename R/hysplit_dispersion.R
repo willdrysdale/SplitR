@@ -400,7 +400,8 @@ hysplit_dispersion <- function(lat = 49.263,
       met_file_df[k, 2] <-
         as.character(
           file.exists(paste0(met_dir, "\\",
-                             met[k])))}
+                             met[k])))
+    }
     
     # Write the met file availability to file
     write.table(met_file_df,
@@ -423,7 +424,7 @@ hysplit_dispersion <- function(lat = 49.263,
       }
       if (met_type == "reanalysis") {
         get_met_reanalysis(files = files_to_get, path_met_files = met_dir)
-      
+      }  
       if (met_type == "gdas1" & is.null(met_dir)) {
         get_met_gdas1(files = files_to_get, path_met_files = getwd())
       }
@@ -503,6 +504,7 @@ hysplit_dispersion <- function(lat = 49.263,
       cat(met_dir, "/\n", met[i], "\n",
           file = paste0(getwd(), "/", "CONTROL"),
           sep = '', append = TRUE)
+    }
   }
     
   # Write emissions blocks to 'CONTROL'
