@@ -818,6 +818,7 @@ hysplit_dispersion <- function(lat = 49.263,
       if (get_os() == "win") {
         write.table(disp_df, file = paste0(getwd(),"/", folder_name, "/dispersion.csv"),
                     sep = ",",row.names = FALSE)
+      }
     }
   }
   
