@@ -3,9 +3,10 @@
 #' dispersion model, depending on the class of the
 #' SplitR modeling object
 #' @param model a SplitR modeling object
+#' @param return_disp_df Logical to return the output dataframe, default false
 #' @export run_model
 
-run_model <- function(model) {
+run_model <- function(model,return_disp_df = F) {
   
   if (inherits(model, "traj_model")) {
 
@@ -31,7 +32,8 @@ run_model <- function(model) {
         traj_name = model$traj_name,
         exec_dir = model$exec_dir,
         met_dir = model$met_dir,
-        binary_path = model$binary_path
+        binary_path = model$binary_path,
+        met_dir = model$met_dir
       )
     
     model$traj_df <- traj_df

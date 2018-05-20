@@ -23,7 +23,8 @@ create_disp_model <- function(name = NULL) {
          grids = NULL,
          vert_motion = 0,
          model_height = 20000,
-         disp_df = NULL)
+         disp_df = NULL,
+         met_dir = NULL)
   
   attr(disp_model, "class") <- "disp_model"
   
