@@ -52,6 +52,7 @@
 #' data to a CSV file.
 #' @param disp_name an optional, descriptive name for
 #' the output file collection.
+#' @param met_dir an optional parameter specifing local met files
 #' @import lubridate
 #' @import ggmap
 #' @export hysplit_dispersion 
@@ -94,7 +95,8 @@ hysplit_dispersion <- function(lat = 49.263,
                                grids,
                                return_disp_df = TRUE,
                                write_disp_CSV = TRUE,
-                               disp_name = NULL) { 
+                               disp_name = NULL,
+                               met_dir = NULL) { 
   
   if (length(start_day) == 1 &
       class(start_day) == "character" &
@@ -397,7 +399,7 @@ hysplit_dispersion <- function(lat = 49.263,
       met_file_df[k, 1] <- met[k]
       met_file_df[k, 2] <-
         as.character(
-          file.exists(paste0(getwd(), "\\",
+          file.exists(paste0(met_dir, "\\",
                              met[k])))}
     
     # Write the met file availability to file
@@ -416,16 +418,17 @@ hysplit_dispersion <- function(lat = 49.263,
       files_to_get <-
         subset(met_file_df, available == FALSE)[,1]
       
-      if (met_type == "reanalysis") {
-        get_met_reanalysis(
-          files = files_to_get,
-          path_met_files = getwd())
+      if (met_type == "reanalysis" & is.null(met_dir)) {
+        get_met_reanalysis(files = files_to_get,path_met_files = getwd())
       }
+      if (met_type == "reanalysis") {
+        get_met_reanalysis(files = files_to_get, path_met_files = met_dir)
       
+      if (met_type == "gdas1" & is.null(met_dir)) {
+        get_met_gdas1(files = files_to_get, path_met_files = getwd())
+      }
       if (met_type == "gdas1") {
-        get_met_gdas1(
-          files = files_to_get,
-          path_met_files = getwd())
+        get_met_gdas1(files = files_to_get, path_met_files = met_dir)
       } 
     }
   }
@@ -489,12 +492,19 @@ hysplit_dispersion <- function(lat = 49.263,
       sep = '', append = TRUE)
   
   # Write met file paths to 'CONTROL'
-  for (i in 1:length(met)) {
-    cat(getwd(), "/\n", met[i], "\n",
-        file = paste0(getwd(), "/", "CONTROL"),
-        sep = '', append = TRUE)
+  if(!is.null(met_dir)){
+    for (i in 1:length(met)) {
+      cat(getwd(), "/\n", met[i], "\n",
+          file = paste0(getwd(), "/", "CONTROL"),
+          sep = '', append = TRUE)
+    }
+  }else{
+    for (i in 1:length(met)) {
+      cat(met_dir, "/\n", met[i], "\n",
+          file = paste0(getwd(), "/", "CONTROL"),
+          sep = '', append = TRUE)
   }
-  
+    
   # Write emissions blocks to 'CONTROL'
   for (i in 1:nrow(emissions)) {
     cat(c(nrow(emissions), "\n",
@@ -805,13 +815,9 @@ hysplit_dispersion <- function(lat = 49.263,
     }
     
     if (get_os() == "win") {
-      write.table(
-        disp_df,
-        file = paste0("\"", getwd(), "/",
-                      folder_name,
-                      "/dispersion.csv\""),
-        sep = ",",
-        row.names = FALSE) 
+      if (get_os() == "win") {
+        write.table(disp_df, file = paste0(getwd(),"/", folder_name, "/dispersion.csv"),
+                    sep = ",",row.names = FALSE)
     }
   }
   
